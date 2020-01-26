@@ -1,10 +1,18 @@
+:root {
+  --background-color:#212121;
+  --background-color-second:#323232;
+  --main-color:#0d7377;
+  --focus-color:#14ffec;
+  --example: #e01a76;
+}
+
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;
 }
 
 code {
-  color: #E01A76;
+  color: var(--example);
 }
 
 .btn-primary {
