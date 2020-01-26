@@ -8,13 +8,11 @@ namespace EmailGroupsAppv1.Models
 {
   public class MailGroupsContext : DbContext
   {
-    public MailGroupsContext(DbContextOptions<MailGroupsContext> options) : base(options)
-    {
-      
-    }
+    public MailGroupsContext() { }
+    public MailGroupsContext(DbContextOptions<MailGroupsContext> options) : base(options) { }
 
-    public DbSet<MailGroup> MailGroups { get; set; }
-    public DbSet<MailAddress> MailAddresses { get; set; }
+    public virtual DbSet<MailGroup> MailGroups { get; set; }
+    public virtual DbSet<MailAddress> MailAddresses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

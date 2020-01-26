@@ -31,6 +31,10 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200126163523_ChangeRelations.cs" />
     <Compile Remove="Migrations\20200126163523_ChangeRelations.Designer.cs" />
+    <Compile Remove="Migrations\20200126182659_VirtualDBSets.cs" />
+    <Compile Remove="Migrations\20200126182659_VirtualDBSets.Designer.cs" />
+    <Compile Remove="Migrations\20200126190459_test.cs" />
+    <Compile Remove="Migrations\20200126190459_test.Designer.cs" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
