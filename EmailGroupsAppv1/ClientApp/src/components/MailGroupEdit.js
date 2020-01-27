@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 import axios from "axios";
+import PropTypes from 'prop-types';
 
 const createMailGroup = (mailGroup, successCallback) => {
     axios.post('api/MailGroups', mailGroup)
-        .then(successCallback());
+        .then(successCallback);
 }
 
 const editMailGroup = (mailGroup, successCallback) => {
     axios.put('api/MailGroups/' + mailGroup.name, mailGroup)
-        .then(successCallback());
+        .then(successCallback);
 }
 
 export default function MailGroupEdit(props) {
@@ -58,4 +59,11 @@ export default function MailGroupEdit(props) {
             </ModalFooter>
         </Modal>
     )
+}
+
+MailGroupEdit.propTypes = {
+    showModal: PropTypes.bool,
+    toggleModal: PropTypes.func.isRequired,
+    onGroupEdit: PropTypes.func.isRequired,
+    editedGroup: PropTypes.object
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, ModalBody, ModalFooter, Button } from 'reactstrap';
+import PropTypes from 'prop-types';
 
 export default function Question(props) {
     const { showModal, content, yesClicked, noClicked } = props;
@@ -19,4 +20,11 @@ export default function Question(props) {
             </ModalFooter>
         </Modal>
     )
+}
+
+Question.propTypes = {
+    showModal: PropTypes.bool,
+    content: PropTypes.string.isRequired,
+    yesClicked: PropTypes.func.isRequired,
+    noClicked: PropTypes.func.isRequired
 }

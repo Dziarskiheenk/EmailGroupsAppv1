@@ -2,6 +2,8 @@ import React, { Fragment, useState } from 'react';
 import { ListGroupItem, Collapse, Card, CardBody, Row, Col, Button } from "reactstrap";
 import Question from './Question';
 import MailGroupEdit from './MailGroupEdit';
+import PropTypes from "prop-types";
+import MailAddressEdit from './MailAddressEdit';
 
 export default function MailGroup(props) {
     const { mailGroup, isOpen, onClick, onDeleteGroup, onGroupEdit } = props;
@@ -12,6 +14,8 @@ export default function MailGroup(props) {
         setShowGroupEditModal(!showGroupEditModal);
     }
 
+    const [showMailAddressEditModal, setShowMailAddressEditModal] = useState(false);
+
     return (
         <Fragment>
             <ListGroupItem tag='button' action onClick={onClick}>{mailGroup.name}</ListGroupItem>
@@ -20,7 +24,7 @@ export default function MailGroup(props) {
                     <CardBody>
                         <Row>
                             <Col sm={12} className='text-center'>
-                                <Button size='sm'>Add e-mail</Button>{' '}
+                                <Button size='sm' onClick={() => { setShowMailAddressEditModal(!showMailAddressEditModal) }}>Add e-mail</Button>{' '}
                                 <Button size='sm' onClick={toggleGroupEditModal}>Group details</Button>{' '}
                                 <Button size='sm' onClick={() => { setShowDeleteQuestion(true) }}>Remove group</Button>
                             </Col>
@@ -44,6 +48,17 @@ export default function MailGroup(props) {
                 editedGroup={mailGroup}
                 toggleModal={toggleGroupEditModal}
                 onGroupEdit={onGroupEdit} />
+
+            <MailAddressEdit showModal={showMailAddressEditModal} />
+
         </Fragment>
     )
+}
+
+MailGroup.propTypes = {
+    mailGroup: PropTypes.object.isRequired,
+    isOpen: PropTypes.bool,
+    onClick: PropTypes.func.isRequired,
+    onDeleteGroup: PropTypes.func.isRequired,
+    onGroupEdit: PropTypes.func.isRequired
 }

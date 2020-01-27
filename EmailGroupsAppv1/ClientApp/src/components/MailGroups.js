@@ -35,6 +35,7 @@ export default function MailGroups() {
             setMailGroups(newMailGroups);
         }
     }
+    //TODO - move axios to MailGroup component
     const removeMailGroup = async name => {
         await axios.delete('api/MailGroups/' + name);
         removeMailGroupFromState(name);
