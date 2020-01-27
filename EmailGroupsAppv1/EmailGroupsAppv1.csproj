@@ -35,6 +35,8 @@
     <Compile Remove="Migrations\20200126182659_VirtualDBSets.Designer.cs" />
     <Compile Remove="Migrations\20200126190459_test.cs" />
     <Compile Remove="Migrations\20200126190459_test.Designer.cs" />
+    <Compile Remove="Migrations\20200127191517_UnableEmptyStrings.cs" />
+    <Compile Remove="Migrations\20200127191517_UnableEmptyStrings.Designer.cs" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
