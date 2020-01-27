@@ -24,7 +24,7 @@ namespace EmailGroupsAppv1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MailGroup>>> GetMailGroups()
         {
-            return await _context.MailGroups.ToListAsync();
+            return await _context.MailGroups.OrderBy(x=>x.Name).ToListAsync();
         }
 
         // GET: api/MailGroups/5

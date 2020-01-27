@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.Entity.Infrastructure;
+using System.Threading;
 
 namespace EmailGroupsAppv1Tests
 {
@@ -31,6 +31,7 @@ namespace EmailGroupsAppv1Tests
     [TestMethod]
     public async Task Get_Mail_Groups()
     {
+      //arrange
       var data = new List<MailGroup>
       {
         new MailGroup{Name="2"},
@@ -38,26 +39,34 @@ namespace EmailGroupsAppv1Tests
         new MailGroup{Name="1"}
       }.AsQueryable();
 
+      //expect
+      var enumerable = new TestAsyncEnumerable<MailGroup>(data);
       var mockMailGroups = new Mock<DbSet<MailGroup>>();
-      mockMailGroups.As<IDbAsyncEnumerable<MailGroup>>()
-        .Setup(x => x.GetAsyncEnumerator())
-        .Returns(new TestAsyncEnumerator<MailGroup>(data.GetEnumerator()));
-
-      mockMailGroups.As<IQueryable<MailGroup>>()
-        .Setup(x => x.Provider)
-        .Returns(new TestAsyncQueryProvider<MailGroup>(data.Provider));
-
+      mockMailGroups.As<IAsyncEnumerable<MailGroup>>()
+        .Setup(x => x.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
+        .Returns(enumerable.GetAsyncEnumerator());
+      mockMailGroups.As<IQueryable<MailGroup>>().Setup(x => x.Provider).Returns(enumerable.Provider);
       mockMailGroups.As<IQueryable<MailGroup>>().Setup(x => x.Expression).Returns(data.Expression);
-      mockMailGroups.As<IQueryable<MailGroup>>().Setup(x => x.ElementType).Returns(data.ElementType);
+      mockMailGroups.As<IQueryable<MailGroup>>().Setup(x => x.ElementType).Returns(enumerable.ElementType);
       mockMailGroups.As<IQueryable<MailGroup>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
-
       var mockContext = new Mock<MailGroupsContext>();
       mockContext.Setup(x => x.MailGroups).Returns(mockMailGroups.Object);
-
       var service = new MailGroupsController(mockContext.Object);
+
+      //act
       var response = await service.GetMailGroups();
 
+      //assert
       Assert.IsInstanceOfType(response, typeof(ActionResult<IEnumerable<MailGroup>>));
+
+      //act
+      var responseValue = response.Value as IEnumerable<MailGroup>;
+
+      //assert
+      Assert.AreEqual(responseValue.Count(), 3);
+      Assert.AreEqual(responseValue.ElementAt(0).Name, "1");
+      Assert.AreEqual(responseValue.ElementAt(1).Name, "2");
+      Assert.AreEqual(responseValue.ElementAt(2).Name, "3");
     }
   }
 }
