@@ -16,6 +16,9 @@ export default function MailGroup(props) {
     }
 
     const [showMailAddressEditModal, setShowMailAddressEditModal] = useState(false);
+    const toggleMailAddressEditModal = () => {
+        setShowMailAddressEditModal(!showMailAddressEditModal);
+    }
 
     const deleteGroup = () => {
         axios.delete('api/MailGroups/' + mailGroup.id)
@@ -55,7 +58,11 @@ export default function MailGroup(props) {
                 toggleModal={toggleGroupEditModal}
                 onGroupEdit={onGroupEdit} />
 
-            <MailAddressEdit showModal={showMailAddressEditModal} />
+            <MailAddressEdit
+                showModal={showMailAddressEditModal}
+                toggleModal={toggleMailAddressEditModal}
+                mailGroup={mailGroup}
+                onGroupEdit={onGroupEdit} />
 
         </Fragment>
     )

@@ -96,7 +96,7 @@ namespace EmailGroupsAppv1.Controllers
         }
       }
 
-      return CreatedAtAction("GetMailGroup", new { name = mailGroup.Name }, mailGroup);
+      return CreatedAtAction("GetMailGroup", new { id = mailGroup.Id }, mailGroup);
     }
 
     // DELETE: api/MailGroups/5
