@@ -14,15 +14,15 @@ export default function MailGroups() {
     const [currentlyOpenedGroup, setCurrentlyOpenedGroup] = useState('');
 
     const [mailGroups, setMailGroups] = useState([]);
-    const removeMailGroupFromState = name => {
-        const index = mailGroups.findIndex(x => x.name === name);
+    const removeMailGroupFromState = id => {
+        const index = mailGroups.findIndex(x => x.id === id);
         if (index !== -1) {
             const newMailGroups = [...mailGroups.slice(0, index), ...mailGroups.slice(index + 1, mailGroups.length)];
             setMailGroups(newMailGroups);
         }
     }
     const updateMailGroupOnState = mailGroup => {
-        const index = mailGroups.findIndex(x => x.name === mailGroup.name);
+        const index = mailGroups.findIndex(x => x.id === mailGroup.id);
         if (index === -1) {
             setMailGroups([...mailGroups, mailGroup]);
         }
@@ -34,11 +34,6 @@ export default function MailGroups() {
             ];
             setMailGroups(newMailGroups);
         }
-    }
-    //TODO - move axios to MailGroup component
-    const removeMailGroup = async name => {
-        await axios.delete('api/MailGroups/' + name);
-        removeMailGroupFromState(name);
     }
     useEffect(() => {
         const fillMailGroups = async () => {
@@ -75,7 +70,7 @@ export default function MailGroups() {
                                 mailGroup={{ ...mailGroup }}
                                 isOpen={currentlyOpenedGroup === mailGroup.name}
                                 onClick={() => setCurrentlyOpenedGroup(mailGroup.name === currentlyOpenedGroup ? '' : mailGroup.name)}
-                                onDeleteGroup={removeMailGroup}
+                                onDeleteGroup={removeMailGroupFromState}
                                 onGroupEdit={updateMailGroupOnState} />
                         )
                     })}

@@ -4,6 +4,7 @@ import Question from './Question';
 import MailGroupEdit from './MailGroupEdit';
 import PropTypes from "prop-types";
 import MailAddressEdit from './MailAddressEdit';
+import axios from 'axios';
 
 export default function MailGroup(props) {
     const { mailGroup, isOpen, onClick, onDeleteGroup, onGroupEdit } = props;
@@ -15,6 +16,14 @@ export default function MailGroup(props) {
     }
 
     const [showMailAddressEditModal, setShowMailAddressEditModal] = useState(false);
+
+    const deleteGroup = () => {
+        axios.delete('api/MailGroups/' + mailGroup.id)
+            .then(() => {
+                onDeleteGroup(mailGroup.id);
+                setShowDeleteQuestion(false)
+            });
+    }
 
     return (
         <Fragment>
@@ -38,10 +47,7 @@ export default function MailGroup(props) {
                 showModal={showDeleteQuestion}
                 content={'Are you sure you want to delete that group?'}
                 noClicked={() => { setShowDeleteQuestion(false) }}
-                yesClicked={() => {
-                    onDeleteGroup(mailGroup.name);
-                    setShowDeleteQuestion(false)
-                }} />
+                yesClicked={deleteGroup} />
 
             <MailGroupEdit
                 showModal={showGroupEditModal}

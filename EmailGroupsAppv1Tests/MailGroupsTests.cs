@@ -62,23 +62,23 @@ namespace EmailGroupsAppv1Tests
     }
 
     [TestMethod]
-    [DataRow("1")]
-    [DataRow("x")]
-    [DataRow("")]
-    public async Task Get_Mail_Group(string name)
+    [DataRow(1)]
+    [DataRow(-1)]
+    [DataRow(4)]
+    public async Task Get_Mail_Group(int id)
     {
       //arrange
       var data = new List<MailGroup>
       {
-        new MailGroup{Name="2"},
-        new MailGroup{Name="3"},
-        new MailGroup{Name="1"}
+        new MailGroup{Id=2},
+        new MailGroup{Id=3},
+        new MailGroup{Id=1}
       }.AsQueryable();
 
       var mockMailGroups = GetMock(data);
-      mockMailGroups.Setup(x => x.FindAsync(name)).ReturnsAsync(() =>
+      mockMailGroups.Setup(x => x.FindAsync(id)).ReturnsAsync(() =>
       {
-        return mockMailGroups.Object.FirstOrDefault(x => x.Name == name);
+        return mockMailGroups.Object.FirstOrDefault(x => x.Id == id);
       });
       var mockContext = new Mock<MailGroupsContext>();
       mockContext.Setup(x => x.MailGroups).Returns(mockMailGroups.Object);
@@ -86,13 +86,13 @@ namespace EmailGroupsAppv1Tests
       var service = new MailGroupsController(mockContext.Object);
 
       //act
-      var response = await service.GetMailGroup(name);
+      var response = await service.GetMailGroup(id);
 
       //assert
-      if (data.Any(x => x.Name == name))
+      if (data.Any(x => x.Id == id))
       {
         Assert.IsNotNull(response.Value);
-        Assert.AreEqual(response.Value.Name, name);
+        Assert.AreEqual(response.Value.Id, id);
       }
       else
       {
@@ -101,33 +101,33 @@ namespace EmailGroupsAppv1Tests
     }
 
     [TestMethod]
-    [DataRow("1")]
-    [DataRow("x")]
-    [DataRow("")]
-    public async Task Delete_Mail_Group(string name)
+    [DataRow(1)]
+    [DataRow(-1)]
+    [DataRow(4)]
+    public async Task Delete_Mail_Group(int id)
     {
       //arrange
       var data = new List<MailGroup>
       {
-        new MailGroup{Name="2"},
-        new MailGroup{Name="3"},
-        new MailGroup{Name="1"}
+        new MailGroup{Id=2},
+        new MailGroup{Id=3},
+        new MailGroup{Id=1}
       }.AsQueryable();
 
       var mockMailGroups = GetMock(data);
-      mockMailGroups.Setup(x => x.FindAsync(name)).ReturnsAsync(() =>
+      mockMailGroups.Setup(x => x.FindAsync(id)).ReturnsAsync(() =>
       {
-        return mockMailGroups.Object.FirstOrDefault(x => x.Name == name);
+        return mockMailGroups.Object.FirstOrDefault(x => x.Id == id);
       });
       var mockContext = new Mock<MailGroupsContext>();
       mockContext.Setup(x => x.MailGroups).Returns(mockMailGroups.Object);
       var service = new MailGroupsController(mockContext.Object);
 
       //act
-      var response = await service.DeleteMailGroup(name);
+      var response = await service.DeleteMailGroup(id);
 
       //assert
-      if (data.Any(x => x.Name == name))
+      if (data.Any(x => x.Id == id))
       {
         mockMailGroups.Verify(x => x.Remove(It.IsAny<MailGroup>()), Times.Once);
         mockContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -145,13 +145,13 @@ namespace EmailGroupsAppv1Tests
     public async Task Update_Mail_Group()
     {
       //arrange
-      var newObject = new MailGroup { Name = "1", Description = "1" };
+      var newObject = new MailGroup { Id = 1, Name = "1" };
 
       var mockContext = new Mock<MailGroupsContext>();
       var service = new MailGroupsController(mockContext.Object);
 
       //act
-      await service.PutMailGroup("x", newObject);
+      await service.PutMailGroup(2, newObject);
 
       //assert
       mockContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);

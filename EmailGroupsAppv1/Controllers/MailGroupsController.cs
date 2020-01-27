@@ -28,10 +28,10 @@ namespace EmailGroupsAppv1.Controllers
     }
 
     // GET: api/MailGroups/5
-    [HttpGet("{name}")]
-    public async Task<ActionResult<MailGroup>> GetMailGroup(string name)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<MailGroup>> GetMailGroup(int id)
     {
-      var mailGroup = await _context.MailGroups.FindAsync(name);
+      var mailGroup = await _context.MailGroups.FindAsync(id);
 
       if (mailGroup == null)
       {
@@ -44,10 +44,10 @@ namespace EmailGroupsAppv1.Controllers
     // PUT: api/MailGroups/5
     // To protect from overposting attacks, please enable the specific properties you want to bind to, for
     // more details see https://aka.ms/RazorPagesCRUD.
-    [HttpPut("{name}")]
-    public async Task<IActionResult> PutMailGroup(string name, MailGroup mailGroup)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutMailGroup(int id, MailGroup mailGroup)
     {
-      if (name != mailGroup.Name)
+      if (id != mailGroup.Id)
       {
         return BadRequest();
       }
@@ -60,7 +60,7 @@ namespace EmailGroupsAppv1.Controllers
       }
       catch (DbUpdateConcurrencyException)
       {
-        if (!MailGroupExists(name))
+        if (!MailGroupExists(id))
         {
           return NotFound();
         }
@@ -86,7 +86,7 @@ namespace EmailGroupsAppv1.Controllers
       }
       catch (DbUpdateException)
       {
-        if (MailGroupExists(mailGroup.Name))
+        if (MailGroupExists(mailGroup.Id))
         {
           return Conflict();
         }
@@ -100,10 +100,10 @@ namespace EmailGroupsAppv1.Controllers
     }
 
     // DELETE: api/MailGroups/5
-    [HttpDelete("{name}")]
-    public async Task<ActionResult<MailGroup>> DeleteMailGroup(string name)
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<MailGroup>> DeleteMailGroup(int id)
     {
-      var mailGroup = await _context.MailGroups.FindAsync(name);
+      var mailGroup = await _context.MailGroups.FindAsync(id);
       if (mailGroup == null)
       {
         return NotFound();
@@ -115,9 +115,9 @@ namespace EmailGroupsAppv1.Controllers
       return mailGroup;
     }
 
-    private bool MailGroupExists(string id)
+    private bool MailGroupExists(int id)
     {
-      return _context.MailGroups.Any(e => e.Name == id);
+      return _context.MailGroups.Any(e => e.Id == id);
     }
   }
 }

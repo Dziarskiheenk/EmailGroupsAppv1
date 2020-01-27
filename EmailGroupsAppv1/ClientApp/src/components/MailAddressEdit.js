@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 
 export default function MailAddressEdit(props) {
-    const { showModal } = props;
+    const { showModal, editedMailAddress } = props;
+    const adding = editedMailAddress === undefined;
+
+    const [mailAddress, setMailAddress] = useState(editedMailAddress ? editedMailAddress : { name: undefined, lastName: undefined, address: undefined });
 
     return (
         <Modal isOpen={showModal}>
@@ -14,10 +17,10 @@ export default function MailAddressEdit(props) {
                         <Input
                             type="email"
                             id="mailAddress"
-                        //defaultValue={mailGroup.name}
-                        // onChange={e => {
-                        //     setMailGroup({ ...mailGroup, name: e.target.value });
-                        // }} 
+                            // defaultValue={mailGroup.name}
+                            // onChange={e => {
+                            //     setMailGroup({ ...mailGroup, name: e.target.value });
+                            // }}
                         />
                         <Label for="mailAddressName">Name</Label>
                         <Input

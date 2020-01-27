@@ -17,12 +17,13 @@ namespace EmailGroupsAppv1.Models
     protected override void OnModelCreating(ModelBuilder builder)
     {
       builder.Entity<MailGroup>()
-          .HasKey(u => u.Name);
+          .HasIndex(u => u.Name)
+          .IsUnique();
 
       builder.Entity<MailGroup>()
           .HasMany(x => x.Addresses)
           .WithOne(x => x.MailGroup)
-          .HasForeignKey(x => x.GroupName)
+          .HasForeignKey(x => x.GroupId)
           .OnDelete(DeleteBehavior.Cascade);
     }
   }

@@ -13,7 +13,7 @@ namespace EmailGroupsAppv1.Models
     [EmailAddress]
     public string Address { get; set; }
 
-    public string GroupName { get; set; }
+    public int GroupId { get; set; }
     public virtual MailGroup MailGroup { get; set; }
   }
 }
