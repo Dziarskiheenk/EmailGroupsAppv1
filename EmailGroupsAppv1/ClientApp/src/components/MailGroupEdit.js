@@ -1,19 +1,37 @@
 import React, { useState } from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
 import axios from "axios";
 import PropTypes from 'prop-types';
 
 export default function MailGroupEdit(props) {
 
-    const { showModal, toggleModal, onGroupEdit, editedGroup } = props;
+    const { toggleModal, onGroupEdit, editedGroup } = props;
     const adding = editedGroup === undefined;
+
     const [mailGroup, setMailGroup] = useState(editedGroup ? editedGroup : { name: undefined, description: undefined });
+
+    const [invalidState, setInvalidState] = useState({ name: false, nameFeedback: '' });
+
+    const validateForm = () => {
+        const nameIsValid = mailGroup.name != undefined;
+        setInvalidState({ name: !nameIsValid, nameFeedback: 'Name is required' });
+        if (!nameIsValid)
+            return false;
+        else
+            return true;
+    }
 
     const createMailGroup = mailGroup => {
         axios.post('api/MailGroups', mailGroup)
             .then(response => {
                 onGroupEdit(response.data);
                 toggleModal();
+            })
+            .catch(err => {
+                if (err.response.status == 409)
+                    setInvalidState({ name: true, nameFeedback: 'Name is taken' });
+                else
+                    console.error(err);
             });
     }
 
@@ -22,11 +40,17 @@ export default function MailGroupEdit(props) {
             .then(() => {
                 onGroupEdit(mailGroup);
                 toggleModal();
+            })
+            .catch(err => {
+                if (err.response.status == 409)
+                    setInvalidState({ name: true, nameFeedback: 'Name is taken' });
+                else
+                    console.error(err);
             });
     }
 
     return (
-        <Modal isOpen={showModal}>
+        <Modal isOpen={true}>
             <ModalHeader toggle={toggleModal}>{adding ? 'Adding ' : 'Editing '}mail group</ModalHeader>
             <ModalBody>
                 <Form>
@@ -38,7 +62,11 @@ export default function MailGroupEdit(props) {
                             defaultValue={mailGroup.name}
                             onChange={e => {
                                 setMailGroup({ ...mailGroup, name: e.target.value });
-                            }} />
+                            }}
+                            invalid={invalidState.name} />
+                        <FormFeedback>{invalidState.nameFeedback}</FormFeedback>
+                    </FormGroup>
+                    <FormGroup>
                         <Label for="mailGroupDescription">Description</Label>
                         <Input
                             type="textarea"
@@ -55,6 +83,7 @@ export default function MailGroupEdit(props) {
                 <Button
                     color={'success'}
                     onClick={() => {
+                        if (!validateForm()) return;
                         if (adding)
                             createMailGroup(mailGroup);
                         else
@@ -68,7 +97,6 @@ export default function MailGroupEdit(props) {
 }
 
 MailGroupEdit.propTypes = {
-    showModal: PropTypes.bool,
     toggleModal: PropTypes.func.isRequired,
     onGroupEdit: PropTypes.func.isRequired,
     editedGroup: PropTypes.object

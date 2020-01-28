@@ -76,10 +76,10 @@ export default function MailGroups() {
                     })}
                 </ListGroup>
 
-                <MailGroupEdit
-                    showModal={showGroupEditModal}
-                    toggleModal={toggleGroupEditModal}
-                    onGroupEdit={updateMailGroupOnState} />
+                {showGroupEditModal &&
+                    <MailGroupEdit
+                        toggleModal={toggleGroupEditModal}
+                        onGroupEdit={updateMailGroupOnState} />}
 
             </Fragment>
         )

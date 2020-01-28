@@ -55,6 +55,11 @@ namespace EmailGroupsAppv1.Controllers
         return BadRequest();
       }
 
+      if(await _context.MailGroups.AnyAsync(x => x.Name == mailGroup.Name))
+      {
+        return Conflict();
+      }
+
       _context.Entry(mailGroup).State = EntityState.Modified;
 
       try

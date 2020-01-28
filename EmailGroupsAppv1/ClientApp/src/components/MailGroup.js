@@ -31,12 +31,13 @@ export default function MailGroup(props) {
     const removeMailAddress = mailAddress => {
         axios.delete('api/MailGroups/' + mailGroup.id + '/MailAddresses/' + mailAddress.id)
             .then(() => {
-
-            })
+                const index = mailGroup.addresses.findIndex(x => x.id = mailAddress.id);
+                mailGroup.addresses.splice(index, 1);
+                onGroupEdit(mailGroup);
+            });
     }
 
-    // TODO
-    //const removeMailAddress=
+    const [editedMailAddress, setEditedMailAddress] = useState(undefined);
 
     return (
         <Fragment>
@@ -47,7 +48,14 @@ export default function MailGroup(props) {
                         {mailGroup.description}
                         <Row>
                             <Col sm={12} className='text-center'>
-                                <Button size='sm' onClick={() => { setShowMailAddressEditModal(!showMailAddressEditModal) }}>Add e-mail</Button>{' '}
+                                <Button
+                                    size='sm'
+                                    onClick={() => {
+                                        setEditedMailAddress(undefined);
+                                        toggleMailAddressEditModal();
+                                    }}>
+                                    Add e-mail
+                                    </Button>{' '}
                                 <Button size='sm' onClick={toggleGroupEditModal}>Group details</Button>{' '}
                                 <Button size='sm' onClick={() => { setShowDeleteQuestion(true) }}>Remove group</Button>
                             </Col>
@@ -70,8 +78,16 @@ export default function MailGroup(props) {
                                             <td>{mailAddress.lastName}</td>
                                             <td>
                                                 <ButtonGroup>
-                                                    <Button size='sm' outline>Edit</Button>
-                                                    <Button size='sm' outline>Remove</Button>
+                                                    <Button
+                                                        size='sm'
+                                                        outline
+                                                        onClick={() => {
+                                                            setEditedMailAddress(mailAddress);
+                                                            toggleMailAddressEditModal();
+                                                        }}>
+                                                        Edit
+                                                        </Button>
+                                                    <Button size='sm' outline onClick={() => { removeMailAddress(mailAddress) }}>Remove</Button>
                                                 </ButtonGroup>
                                             </td>
                                         </tr>
@@ -88,17 +104,17 @@ export default function MailGroup(props) {
                 noClicked={() => { setShowDeleteQuestion(false) }}
                 yesClicked={deleteGroup} />
 
-            <MailGroupEdit
-                showModal={showGroupEditModal}
-                editedGroup={mailGroup}
-                toggleModal={toggleGroupEditModal}
-                onGroupEdit={onGroupEdit} />
+            {showGroupEditModal &&
+                <MailGroupEdit
+                    editedGroup={mailGroup}
+                    toggleModal={toggleGroupEditModal}
+                    onGroupEdit={onGroupEdit} />}
 
-            <MailAddressEdit
-                showModal={showMailAddressEditModal}
-                toggleModal={toggleMailAddressEditModal}
-                mailGroup={mailGroup}
-                onGroupEdit={onGroupEdit} />
+            {showMailAddressEditModal &&
+                <MailAddressEdit
+                    toggleModal={toggleMailAddressEditModal}
+                    mailGroup={mailGroup}
+                    editedMailAddress={editedMailAddress} />}
 
         </Fragment>
     )
