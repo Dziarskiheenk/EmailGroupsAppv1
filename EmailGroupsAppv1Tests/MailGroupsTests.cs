@@ -157,6 +157,97 @@ namespace EmailGroupsAppv1Tests
       mockContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
+    [TestMethod]
+    [DataRow(1, 1)]
+    [DataRow(1, 2)]
+    [DataRow(2, 1)]
+    public async Task Create_Mail_Address(int groupId, int addressGroupId)
+    {
+      //arrange
+      var data = new List<MailAddress>().AsQueryable();
+      var newObject = new MailAddress { GroupId = addressGroupId, Name = "1" };
+
+      var mockMailAddresses = GetMock(data);
+      var mockContext = new Mock<MailGroupsContext>();
+      mockContext.Setup(x => x.MailAddresses).Returns(mockMailAddresses.Object);
+      var service = new MailGroupsController(mockContext.Object);
+
+      //act
+      await service.PostMailAddress(groupId, newObject);
+
+      //assert
+      if (groupId == addressGroupId)
+      {
+        mockMailAddresses.Verify(x => x.Add(It.IsAny<MailAddress>()), Times.Once);
+        mockContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+      }
+      else
+      {
+        mockMailAddresses.Verify(x => x.Add(It.IsAny<MailAddress>()), Times.Never);
+        mockContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+      }
+    }
+
+    [TestMethod]
+    [DataRow(1, 1, 2)]
+    [DataRow(1, 2, 1)]
+    public async Task Update_Mail_Address(int groupId, int id, int mailAddressGroupId)
+    {
+      //arrange
+      var newObject = new MailAddress { Id = 1, GroupId = mailAddressGroupId };
+
+      var mockContext = new Mock<MailGroupsContext>();
+      var service = new MailGroupsController(mockContext.Object);
+
+      //act
+      await service.PutMailAddress(groupId, id, newObject);
+
+      //assert
+      mockContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [TestMethod]
+    [DataRow(1, 1)]
+    [DataRow(1, 2)]
+    [DataRow(2, 1)]
+    [DataRow(2, 4)]
+    public async Task Delete_Mail_Address(int groupId, int id)
+    {
+      //arrange
+      var data = new List<MailAddress>
+      {
+        new MailAddress{Id=1, GroupId=1},
+        new MailAddress{Id=2, GroupId=1},
+        new MailAddress{Id=3, GroupId=1}
+      }.AsQueryable();
+
+      var mockMailGroups = GetMock(data);
+      mockMailGroups.Setup(x => x.FindAsync(id)).ReturnsAsync(() =>
+      {
+        return mockMailGroups.Object.FirstOrDefault(x => x.Id == id);
+      });
+      var mockContext = new Mock<MailGroupsContext>();
+      mockContext.Setup(x => x.MailAddresses).Returns(mockMailGroups.Object);
+      var service = new MailGroupsController(mockContext.Object);
+
+      //act
+      var response = await service.DeleteMailAddress(groupId, id);
+
+      //assert
+      if (data.Any(x => x.Id == id && x.GroupId == groupId))
+      {
+        mockMailGroups.Verify(x => x.Remove(It.IsAny<MailAddress>()), Times.Once);
+        mockContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        Assert.IsNotNull(response.Value);
+      }
+      else
+      {
+        mockMailGroups.Verify(x => x.Remove(It.IsAny<MailAddress>()), Times.Never);
+        mockContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        Assert.IsNull(response.Value);
+      }
+    }
+
     private Mock<DbSet<TEntity>> GetMock<TEntity>(IQueryable<TEntity> data) where TEntity : class
     {
       var enumerable = new TestAsyncEnumerable<TEntity>(data);

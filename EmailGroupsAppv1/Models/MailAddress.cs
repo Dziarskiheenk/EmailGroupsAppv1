@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace EmailGroupsAppv1.Models
 {
@@ -14,6 +15,7 @@ namespace EmailGroupsAppv1.Models
     public string Address { get; set; }
 
     public int GroupId { get; set; }
+    [JsonIgnore]
     public virtual MailGroup MailGroup { get; set; }
   }
 }

@@ -6,23 +6,14 @@ export default function MailAddressEdit(props) {
     const { showModal, editedMailAddress, toggleModal, mailGroup, onGroupEdit } = props;
     const adding = editedMailAddress === undefined;
 
-    const [mailAddress, setMailAddress] = useState(editedMailAddress ? editedMailAddress : { name: undefined, lastName: undefined, address: undefined });
+    const [mailAddress, setMailAddress] = useState(editedMailAddress ? editedMailAddress : { name: undefined, lastName: undefined, address: undefined, groupId: mailGroup.id });
 
-    const saveMailAddress = mailAddress => {
+    const createMailAddress = () => {
         debugger;
-        const index = mailGroup.addresses.findIndex(x => x.id == mailAddress.id);
-        if (index === -1)
-            mailGroup.addresses.push(mailAddress);
-        else
-            mailGroup.addresses = [
-                ...mailGroup.addresses.slice(0, index),
-                mailAddress,
-                ...mailGroup.addresses.slice(index + 1, mailGroup.addresses.length)
-            ];
-
-        axios.put('api/MailGroups/' + mailGroup.id, mailGroup)
-            .then(() => {
-                onGroupEdit(mailGroup);
+        axios.post('api/MailGroups/' + mailGroup.id + '/MailAddresses', mailAddress)
+            .then(response => {
+                debugger;
+                mailGroup.addresses.push(response.data)
                 toggleModal();
             });
     }
@@ -66,7 +57,7 @@ export default function MailAddressEdit(props) {
                 <Button color={'secondary'} onClick={toggleModal} >Cancel</Button>
                 <Button
                     color={'success'}
-                    onClick={() => { saveMailAddress(mailAddress) }}>Save</Button>
+                    onClick={createMailAddress}>Save</Button>
             </ModalFooter>
         </Modal>
     )
