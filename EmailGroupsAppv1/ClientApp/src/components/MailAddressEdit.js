@@ -10,7 +10,8 @@ export default function MailAddressEdit(props) {
 
     const [invalidState, setInvalidState] = useState({ address: false, name: false, lastName: false });
     const validateForm = () => {
-        const addressIsValid = mailAddress.address != undefined;
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const addressIsValid = re.test(String(mailAddress.address).toLowerCase());
         const nameIsValid = mailAddress.name != undefined;
         const lastNameIsValid = mailAddress.lastName != undefined;
         setInvalidState({
@@ -61,7 +62,7 @@ export default function MailAddressEdit(props) {
                             }}
                             invalid={invalidState.address}
                         />
-                        <FormFeedback>E-mail is required</FormFeedback>
+                        <FormFeedback>It is not a valid e-mail address</FormFeedback>
                     </FormGroup>
                     <FormGroup>
                         <Label for="mailAddressName">Name</Label>
