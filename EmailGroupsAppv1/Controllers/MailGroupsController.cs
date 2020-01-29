@@ -55,22 +55,21 @@ namespace EmailGroupsAppv1.Controllers
         return BadRequest();
       }
 
-      if (await _context.MailGroups.AnyAsync(x => x.Name == mailGroup.Name && x.Id != mailGroup.Id))
-      {
-        return Conflict();
-      }
-
       _context.Entry(mailGroup).State = EntityState.Modified;
 
       try
       {
         await _context.SaveChangesAsync();
       }
-      catch (DbUpdateConcurrencyException)
+      catch (DbUpdateException)
       {
         if (!MailGroupExists(id))
         {
           return NotFound();
+        }
+        else if (await _context.MailGroups.AnyAsync(x => x.Name == mailGroup.Name && x.Id != mailGroup.Id))
+        {
+          return Conflict();
         }
         else
         {
