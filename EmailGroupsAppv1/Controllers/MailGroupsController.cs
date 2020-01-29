@@ -55,7 +55,7 @@ namespace EmailGroupsAppv1.Controllers
         return BadRequest();
       }
 
-      if(await _context.MailGroups.AnyAsync(x => x.Name == mailGroup.Name))
+      if (await _context.MailGroups.AnyAsync(x => x.Name == mailGroup.Name && x.Id != mailGroup.Id))
       {
         return Conflict();
       }
@@ -94,7 +94,7 @@ namespace EmailGroupsAppv1.Controllers
       }
       catch (DbUpdateException)
       {
-        if (MailGroupExists(mailGroup.Id))
+        if (MailGroupExists(mailGroup.Name) || MailGroupExists(mailGroup.Id))
         {
           return Conflict();
         }
@@ -213,6 +213,11 @@ namespace EmailGroupsAppv1.Controllers
     private bool MailGroupExists(int id)
     {
       return _context.MailGroups.Any(e => e.Id == id);
+    }
+
+    private bool MailGroupExists(string name)
+    {
+      return _context.MailGroups.Any(e => e.Name == name);
     }
 
     private bool MailAddressExists(int id)
