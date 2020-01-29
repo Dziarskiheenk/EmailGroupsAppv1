@@ -11,15 +11,15 @@ export default function MailAddressEdit(props) {
     const [invalidState, setInvalidState] = useState({ address: false, name: false, lastName: false });
     const validateForm = () => {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        const addressIsValid = re.test(String(mailAddress.address).toLowerCase());
-        const nameIsValid = mailAddress.name != undefined;
-        const lastNameIsValid = mailAddress.lastName != undefined;
+        const addressIsInvalid = !re.test(String(mailAddress.address).toLowerCase());
+        const nameIsInvalid = !mailAddress.name;
+        const lastNameIsInvalid = !mailAddress.lastName;
         setInvalidState({
-            address: !addressIsValid,
-            name: !nameIsValid,
-            lastName: !lastNameIsValid
+            address: addressIsInvalid,
+            name: nameIsInvalid,
+            lastName: lastNameIsInvalid
         });
-        if (!addressIsValid || !nameIsValid || !lastNameIsValid)
+        if (addressIsInvalid || nameIsInvalid || lastNameIsInvalid)
             return false;
         else
             return true;

@@ -13,9 +13,9 @@ export default function MailGroupEdit(props) {
     const [invalidState, setInvalidState] = useState({ name: false, nameFeedback: '' });
 
     const validateForm = () => {
-        const nameIsValid = mailGroup.name != undefined;
-        setInvalidState({ name: !nameIsValid, nameFeedback: 'Name is required' });
-        if (!nameIsValid)
+        const nameIsInvalid = !mailGroup.name;
+        setInvalidState({ name: nameIsInvalid, nameFeedback: 'Name is required' });
+        if (nameIsInvalid)
             return false;
         else
             return true;
